@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<HEAD>
+<title>Weather</title>
+<style>
+.weatherTable, td, th{
+	border-style:solid;
+	border-width:2px;
+	border-color:grey;
+	border-collapse: collapse;
+	text-align:center;
+}
+th{
+column-width: 100px;
+}
+tr {
+	line-height:200%;
+}
+body {
+background-color:#87CEFA
+}
+
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<SCRIPT>
+var countryCode;
+var Icon;
+var currentRow=1;
+var myTable;
+$(document).ready(function(){
+$("#APIBttn").click(BtnClick)
+myTable=document.getElementById("theWeather");
+})
+
+function BtnClick()
+{
+	if ($("#CityInput").val()!='')
+	{
+	theCity=$("#CityInput").val();
+	console.log("http://api.openweathermap.org/data/2.5/weather?q="+theCity+"&APPID=324ab3fa29b1640558f1d1696c8f9414");
+	$.ajax({
+	url:"http://api.openweathermap.org/data/2.5/weather?q="+theCity+"&APPID=324ab3fa29b1640558f1d1696c8f9414",
+	type:"GET",
+	dataType:"json",
+	success:successFunc,
+	error:errorFunc, 
+	complete: function (xhr, status)
+			  {
+			  console.log("done");
+	          }
+	})
+	}
+	else 
+	{
+	alert("Error! Input is invalid.");
+	}
+}
+function successFunc(result)
+{
+console.log(result);
+countryCode=(result.sys.country).toLowerCase();
+Flag="<img src = \"http://openweathermap.org/images/flags/" + countryCode + ".png\">";
+icon="<img src = \"http://openweathermap.org/img/w/" +result.weather[0].icon+ ".png\">";
+			$('#theWeather').append(
+			"<tr>" +
+				"<td>" + result.name + "</td>" +
+				"<td>" + result.weather[0].description + "</td>" +
+				"<td>" + icon + "</td>" +
+				"<td>" + result.wind.speed + "</td>" +
+				"<td>" + Math.round((result.main.temp-273.15)*10)/10 + "</td>" +
+				"<td>" + result.main.humidity + "</td>" +
+				"<td>" + Flag + "</td>" +
+			"</tr>");
+}
+function errorFunc()
+{
+alert("It did not work");
+}
+</SCRIPT>
+</HEAD>
+<BODY>
+<h1>Weather Widget</h1>
+<p> Which City would you like to lookup? <input type = "text" id="CityInput"> <button type="button" id="APIBttn">GO</button> </p>
+		<table class="weatherTable" id="theWeather">
+			<tr><th>City</th><th>Description</th><th>Weather</th><th>Wind</th><th>Degrees</th><th>Humidity</th><th>Flag</th></tr>
+		</table>
+<FOOTER>
+<p> Created by Armando Mancino: 1481955
+</FOOTER>
+</BODY>
+</html>
